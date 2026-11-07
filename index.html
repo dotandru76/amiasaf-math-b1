@@ -2,7 +2,10 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="only light">
+<meta name="theme-color" content="#2f6fdf">
+<meta name="darkreader-lock">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="תרגול ח ב1">
@@ -10,7 +13,9 @@
 <title>תרגול יומי – ח' ב1</title>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
+html{color-scheme:only light;background:#f4f1ea}
 :root{
+  color-scheme:only light;
   --bg:#f4f1ea; --card:#ffffff; --ink:#1f2a37; --muted:#6b7280;
   --brand:#2f6fdf; --brand2:#1e4fb0; --ok:#16a34a; --okbg:#e8f7ee;
   --warn:#d97706; --warnbg:#fff4e0; --bad:#dc2626; --badbg:#fdecec; --line:#e5e1d8;
@@ -18,8 +23,11 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
-body{-webkit-text-size-adjust:100%;text-size-adjust:100%;font-family:'Rubik',Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.55;-webkit-tap-highlight-color:transparent}
-.wrap{max-width:560px;margin:0 auto;padding:14px 14px 60px}
+body{-webkit-text-size-adjust:100%;color-scheme:only light;forced-color-adjust:none;min-height:100vh;overflow-x:hidden;text-size-adjust:100%;font-family:'Rubik',Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.55;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:560px;margin:0 auto;padding:14px max(14px,env(safe-area-inset-right)) 60px max(14px,env(safe-area-inset-left))}
+input,button,select,textarea{color:var(--ink);background-color:#fff;font-family:inherit}
+svg{background:#fff;border-radius:10px;max-width:100%;height:auto}
+img{max-width:100%}
 .m{direction:ltr;unicode-bidi:isolate;display:inline-block;font-weight:600;white-space:nowrap}
 .ml{direction:ltr;unicode-bidi:isolate;display:inline-block;text-align:left}
 .field .lab > .ml{font-size:20px;font-weight:700}
@@ -29,6 +37,7 @@ body{-webkit-text-size-adjust:100%;text-size-adjust:100%;font-family:'Rubik',Ari
 .eqb .e,.eqb .op{direction:ltr;unicode-bidi:isolate;text-align:left}
 .eqb .e{white-space:nowrap;display:flex;align-items:center;gap:6px}
 .eqb .op{color:#dc2626;font-weight:700;font-size:18px;white-space:nowrap}
+.eqb .op.heb{white-space:normal;font-size:15px;line-height:1.2;max-width:6em;direction:rtl;text-align:right}
 .eqb input{width:92px;font:inherit;font-size:21px;font-weight:700;text-align:center;padding:6px;border:2px solid var(--line);border-radius:10px;background:#fff}
 .eqb input.good{border-color:var(--ok);background:var(--okbg)}
 .eqb input.wrong{border-color:var(--bad);background:var(--badbg)}
@@ -111,6 +120,10 @@ table.dt th{background:#f3efe6;font-weight:700}
 .fin .big{font-size:24px;font-weight:800;color:var(--ok);margin:6px 0}
 .parent{background:var(--t3);border-radius:12px;padding:12px;margin:12px 0;font-size:16px}
 .small{font-size:13px;color:var(--muted)}
+@media (max-width:440px){ .eqb{font-size:19px;gap:6px 14px;padding:10px 12px} .eqb input{width:78px;font-size:19px} }
+@media (max-width:380px){ body{font-size:16px} .wrap{padding-left:10px;padding-right:10px} .card{padding:12px} .eqb{font-size:18px;gap:6px 12px;padding:10px} .eqb .op{font-size:15px} .eqb input{width:72px;font-size:18px} .field input{width:90px;font-size:20px} .pt input{width:58px} .pm{width:38px;height:38px} .top h1{font-size:21px} .mhead h2{font-size:19px} table.dt{font-size:14px} table.dt td,table.dt th{padding:5px 6px} }
+.eqb{max-width:100%;overflow-x:auto}
+@media (max-width:340px){ .eqb{font-size:16px;gap:6px 8px;padding:8px} .eqb .op{font-size:14px} .eqb .op.heb{font-size:13px} .eqb input{width:64px;font-size:17px} }
 @media (min-width:768px){ .wrap{max-width:720px;padding:24px 24px 60px} body{font-size:19px} .qtitle{font-size:20px} .field input{width:130px} .pt input{width:84px} }
 </style>
 </head>
@@ -127,7 +140,7 @@ const HEB = /[\u0590-\u05FF]/;
 /* טקסט בלי עברית (ביטוי מתמטי בלבד) מוצג תמיד משמאל לימין */
 const B = s => (s===undefined||s===null||s==="") ? "" : (HEB.test(String(s).replace(/<[^>]+>/g,"")) ? s : `<span class="ml">${s}</span>`);
 /* שלבי פתרון משוואה: [[משוואה, פעולה], ...] */
-function eqSteps(rows){ return `<div class="eqb">${rows.map(r=>`<div class="e">${r[0]}</div><div class="op">${r[1]||""}</div>`).join("")}</div>`; }
+function eqSteps(rows){ return `<div class="eqb">${rows.map(r=>`<div class="e">${r[0]}</div><div class="op${HEB.test(r[1]||"")?" heb":""}">${r[1]||""}</div>`).join("")}</div>`; }
 function grid(points){
   const min=-6,max=6,c=20,pad=14,size=(max-min)*c+pad*2;
   const X=x=>pad+(x-min)*c, Y=y=>pad+(max-y)*c;
@@ -414,6 +427,7 @@ function renderHome(){
   });
   html+=`<div class="small" style="text-align:center;margin-top:14px">משימה נפתחת ביום שלה. משימה שפוספסה אפשר להשלים בכל זמן.</div>`;
   if(TEACHER_MODE) html+=`<div style="height:10px"></div><a class="btn" href="${T_ALL}" style="text-decoration:none">כל התרגילים והתשובות</a><div style="height:8px"></div><button class="btn" id="rst" style="background:#eef2f8;color:var(--ink)">איפוס ההתקדמות של המורה</button>`;
+  html=envNote()+html;
   if(TEACHER_MODE) html=`<div style="background:#1f2a37;color:#fff;border-radius:12px;padding:8px 12px;margin-bottom:10px;font-size:14px;font-weight:700">🔑 מצב מורה – כל המשימות פתוחות. ההתקדמות כאן נפרדת מזו של התלמיד.</div>`+html;
   $("app").innerHTML=html;
   if($("rst")) $("rst").onclick=()=>{ state.done={}; save(); renderHome(); };
@@ -463,7 +477,7 @@ function renderQuestion(){
 function fieldHTML(f,k){
   if(f.type==="eqchain") return `<div class="field">${f.label?`<div class="lab">${B(f.label)}</div>`:""}<div class="eqb" style="margin:0 auto">${f.rows.map((r,i)=>{
       const left = ("ans" in r) ? `${r.lhs} <input id="f${k}_${i}" inputmode="decimal" autocomplete="off">${r.neg?`<button class="pm" data-for="f${k}_${i}" type="button">±</button>`:""}` : r.eq;
-      return `<div class="e">${left}</div><div class="op">${r.op||""}</div>`; }).join("")}</div></div>`;
+      return `<div class="e">${left}</div><div class="op${HEB.test(r.op||"")?" heb":""}">${r.op||""}</div>`; }).join("")}</div></div>`;
   if(f.type==="choice") return `<div class="field"><div class="lab">${B(f.label)}</div><div class="choices ${f.inline?'inline':''}">${f.options.map((o,j)=>`<button class="choice" data-k="${k}" data-o="${j}">${B(o)}</button>`).join("")}</div></div>`;
   if(f.type==="point") return `<div class="field"><div class="lab">${B(f.label)}</div>
     <div class="pt">( <input id="f${k}x" inputmode="decimal" autocomplete="off" placeholder="x"><button class="pm" data-for="f${k}x" type="button">±</button> ,
@@ -548,6 +562,14 @@ function renderAll(){
   window.scrollTo(0,0);
 }
 
+/* בדיקת סביבה: דפדפן בתוך אפליקציה / מצב לילה כפוי */
+function envNote(){
+  const ua=navigator.userAgent||"", notes=[];
+  if(/FBAN|FBAV|Instagram|WhatsApp|Line\/|; wv\)|MicroMessenger|Mashov/i.test(ua)) notes.push("כדי שההתקדמות תישמר – פתחו את הקישור בדפדפן (Chrome או Safari) ולא מתוך אפליקציה אחרת.");
+  let dark=false; try{ dark=matchMedia("(prefers-color-scheme: dark)").matches; }catch(e){}
+  if(/SamsungBrowser/i.test(ua) && dark) notes.push("אם המסך נראה כהה: בדפדפן סמסונג ← תפריט ← לכבות \"מצב כהה\".");
+  return notes.length ? `<div style="background:#fff4e0;color:#7a4a00;border-radius:12px;padding:10px 12px;margin-bottom:10px;font-size:14px">${notes.join("<br>")}</div>` : "";
+}
 load(); if(location.hash===T_ALL) renderAll(); else renderHome();
 window.addEventListener("hashchange",()=>location.reload());
 </script>
