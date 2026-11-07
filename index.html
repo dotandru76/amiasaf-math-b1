@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="תרגול ח ב1">
+<meta name="format-detection" content="telephone=no">
+<title>תרגול יומי – ח' ב1</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f1ea; --card:#ffffff; --ink:#1f2a37; --muted:#6b7280;
+  --brand:#2f6fdf; --brand2:#1e4fb0; --ok:#16a34a; --okbg:#e8f7ee;
+  --warn:#d97706; --warnbg:#fff4e0; --bad:#dc2626; --badbg:#fdecec; --line:#e5e1d8;
+  --t1:#e0edff; --t2:#ffe9d6; --t3:#e3f6ea; --t4:#efe6ff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{-webkit-text-size-adjust:100%;text-size-adjust:100%;font-family:'Rubik',Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.55;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:560px;margin:0 auto;padding:14px 14px 60px}
+.m{direction:ltr;unicode-bidi:isolate;display:inline-block;font-weight:600;white-space:nowrap}
+h1,h2,h3{margin:0}
+.top{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border-radius:18px;padding:16px 18px;margin-bottom:14px}
+.top .school{font-size:13px;opacity:.85}
+.top h1{font-size:23px;font-weight:800;margin-top:2px}
+.top .sub{margin-top:6px;font-size:15px;opacity:.95}
+.stats{display:flex;gap:8px;margin-top:12px}
+.stat{flex:1;background:rgba(255,255,255,.16);border-radius:12px;padding:8px 6px;text-align:center}
+.stat b{display:block;font-size:21px;font-weight:800}
+.stat span{font-size:12px;opacity:.9}
+.card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:14px;font:inherit;font-weight:700;font-size:18px;cursor:pointer;background:var(--brand);color:#fff;text-align:center}
+.btn:active{transform:scale(.98)}
+.mission,.choice,.btn,.pm{touch-action:manipulation;-webkit-user-select:none;user-select:none}
+input{-webkit-appearance:none;appearance:none}
+.btn.ok{background:var(--ok)}
+.weekhead{font-weight:700;color:var(--muted);font-size:14px;margin:16px 4px 8px}
+.mission{display:flex;align-items:center;gap:12px;background:#fff;border-radius:14px;padding:12px;margin-bottom:9px;border:2px solid transparent;cursor:pointer}
+.mission .ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex:none}
+.mission .info{flex:1;min-width:0}
+.mission .t{font-weight:700;font-size:16px}
+.mission .d{font-size:13px;color:var(--muted)}
+.mission .st{font-size:13px;flex:none;text-align:center;min-width:60px;font-weight:700}
+.mission.locked{opacity:.5;cursor:default}
+.mission.today{border-color:var(--brand)}
+.mission.late{border-color:var(--warn)}
+.mission.done .st{color:var(--ok)}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;margin-inline-start:6px;vertical-align:middle}
+.tag.today{background:var(--brand);color:#fff}
+.tag.late{background:var(--warnbg);color:var(--warn)}
+.back{background:none;border:0;font:inherit;color:var(--brand);font-weight:700;padding:4px 0;margin-bottom:6px;cursor:pointer}
+.mhead{border-radius:16px;padding:14px 16px;margin-bottom:12px}
+.mhead .k{font-size:13px;font-weight:700;opacity:.75}
+.mhead h2{font-size:21px;font-weight:800}
+.learn h3{font-size:17px;margin-bottom:6px}
+.learn p{margin:0 0 8px}
+.steps{background:#f2f7ff;border-radius:12px;padding:10px 12px;margin-top:6px}
+.steps .h{font-weight:700;margin-bottom:4px}
+.steps ol{margin:0;padding-inline-start:20px}
+.steps li{margin:3px 0}
+details.tool{background:#fffbea;border:2px dashed #f0d264;border-radius:14px;padding:10px 14px;margin-bottom:12px}
+details.tool summary{font-weight:700;cursor:pointer}
+details.tool ul{margin:6px 0 0;padding-inline-start:20px}
+details.tool li{margin:3px 0}
+.dots{display:flex;gap:6px;justify-content:center;margin:4px 0 12px}
+.dot{width:34px;height:8px;border-radius:5px;background:#ddd6c8}
+.dot.on{background:var(--brand)}
+.dot.fin{background:var(--ok)}
+.qk{font-size:13px;font-weight:700;color:var(--muted)}
+.qtitle{font-size:18px;font-weight:700;margin:2px 0 10px}
+.prompt{margin-bottom:10px}
+.field{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0;padding:10px;background:#faf8f3;border-radius:12px}
+.field .lab{flex:1 1 100%;font-weight:500}
+.field .inwrap{display:flex;align-items:center;gap:6px;direction:ltr}
+.field input{width:110px;font:inherit;font-size:22px;font-weight:700;text-align:center;padding:8px;border:2px solid var(--line);border-radius:12px;direction:ltr;background:#fff}
+.field input.good{border-color:var(--ok);background:var(--okbg)}
+.field input.wrong{border-color:var(--bad);background:var(--badbg)}
+.pm{width:44px;height:44px;border-radius:12px;border:2px solid var(--line);background:#fff;font-size:20px;font-weight:800;cursor:pointer}
+.suf{font-size:20px;font-weight:700}
+.pt{display:flex;align-items:center;gap:4px;direction:ltr;font-size:22px;font-weight:700}
+.pt input{width:72px}
+.choices{display:flex;flex-direction:column;gap:7px;width:100%}
+.choice{border:2px solid var(--line);background:#fff;border-radius:12px;padding:11px 12px;font:inherit;text-align:right;cursor:pointer}
+.choice.sel{border-color:var(--brand);background:#eaf1ff}
+.choice.good{border-color:var(--ok);background:var(--okbg)}
+.choice.wrong{border-color:var(--bad);background:var(--badbg)}
+.choices.inline{flex-direction:row;flex-wrap:wrap}
+.choices.inline .choice{flex:1;text-align:center;min-width:80px}
+.fb{border-radius:12px;padding:10px 12px;margin:10px 0;font-weight:500;display:none}
+.fb.ok{display:block;background:var(--okbg);color:#11643a}
+.fb.hint{display:block;background:var(--warnbg);color:#7a4a00}
+.fb.sol{display:block;background:#eef2f8;color:var(--ink)}
+table.dt{border-collapse:collapse;margin:8px auto;direction:rtl;font-size:16px}
+table.dt td,table.dt th{border:1.5px solid #cfc8b8;padding:6px 10px;text-align:center}
+table.dt th{background:#f3efe6;font-weight:700}
+.svgbox{text-align:center;margin:6px 0}
+.fin{text-align:center}
+.fin .big{font-size:24px;font-weight:800;color:var(--ok);margin:6px 0}
+.parent{background:var(--t3);border-radius:12px;padding:12px;margin:12px 0;font-size:16px}
+.small{font-size:13px;color:var(--muted)}
+@media (min-width:768px){ .wrap{max-width:720px;padding:24px 24px 60px} body{font-size:19px} .qtitle{font-size:20px} .field input{width:130px} .pt input{width:84px} }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+const T_OPEN="#dd-morah-b1", T_ALL="#dd-tshuvot-b1";
+const TEACHER_MODE = [T_OPEN,T_ALL].includes(location.hash||"");
+const STORE_KEY = TEACHER_MODE ? "amiasaf_b1_daily_teacher" : "amiasaf_b1_daily_v2";
+
+const M = s => `<span class="m">${s}</span>`;
+function grid(points){
+  const min=-6,max=6,c=20,pad=14,size=(max-min)*c+pad*2;
+  const X=x=>pad+(x-min)*c, Y=y=>pad+(max-y)*c;
+  let g=`<svg viewBox="0 0 ${size} ${size}" width="250" height="250" xmlns="http://www.w3.org/2000/svg" style="direction:ltr">`;
+  for(let i=min;i<=max;i++){
+    g+=`<line x1="${X(i)}" y1="${Y(min)}" x2="${X(i)}" y2="${Y(max)}" stroke="#e3ded2"/>`;
+    g+=`<line x1="${X(min)}" y1="${Y(i)}" x2="${X(max)}" y2="${Y(i)}" stroke="#e3ded2"/>`;
+  }
+  g+=`<line x1="${X(min)}" y1="${Y(0)}" x2="${X(max)}" y2="${Y(0)}" stroke="#555" stroke-width="2"/>`;
+  g+=`<line x1="${X(0)}" y1="${Y(min)}" x2="${X(0)}" y2="${Y(max)}" stroke="#555" stroke-width="2"/>`;
+  g+=`<text x="${X(max)-4}" y="${Y(0)-5}" font-size="12" text-anchor="end">x</text><text x="${X(0)+6}" y="${Y(max)+11}" font-size="12">y</text>`;
+  for(let i=min+1;i<max;i++){ if(i===0||i%2) continue;
+    g+=`<text x="${X(i)}" y="${Y(0)+14}" font-size="10" text-anchor="middle" fill="#888">${i}</text>`;
+    g+=`<text x="${X(0)-5}" y="${Y(i)+4}" font-size="10" text-anchor="end" fill="#888">${i}</text>`; }
+  points.forEach(p=>{ g+=`<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="6" fill="${p.color||'#e11d48'}"/><text x="${X(p.x)+8}" y="${Y(p.y)-7}" font-size="14" font-weight="700" fill="${p.color||'#e11d48'}">${p.label}</text>`; });
+  return g+`</svg>`;
+}
+function cylinderSVG(){
+  return `<svg viewBox="0 0 160 140" width="150" height="130" xmlns="http://www.w3.org/2000/svg" style="direction:ltr">
+  <ellipse cx="80" cy="25" rx="55" ry="16" fill="#dbeafe" stroke="#1e4fb0" stroke-width="2"/>
+  <line x1="25" y1="25" x2="25" y2="113" stroke="#1e4fb0" stroke-width="2"/><line x1="135" y1="25" x2="135" y2="113" stroke="#1e4fb0" stroke-width="2"/>
+  <path d="M25 113 A55 16 0 0 0 135 113" fill="none" stroke="#1e4fb0" stroke-width="2"/><path d="M25 113 A55 16 0 0 1 135 113" fill="none" stroke="#1e4fb0" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="80" y1="25" x2="135" y2="25" stroke="#e11d48" stroke-width="2"/><text x="100" y="20" font-size="13" fill="#e11d48" font-weight="700">R</text>
+  <text x="141" y="73" font-size="13" fill="#16a34a" font-weight="700">h</text></svg>`;
+}
+function coneSVG(){
+  return `<svg viewBox="0 0 160 140" width="150" height="130" xmlns="http://www.w3.org/2000/svg" style="direction:ltr">
+  <line x1="80" y1="8" x2="25" y2="113" stroke="#9a3412" stroke-width="2"/><line x1="80" y1="8" x2="135" y2="113" stroke="#9a3412" stroke-width="2"/>
+  <path d="M25 113 A55 16 0 0 0 135 113" fill="#ffedd5" stroke="#9a3412" stroke-width="2"/><path d="M25 113 A55 16 0 0 1 135 113" fill="none" stroke="#9a3412" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="80" y1="8" x2="80" y2="113" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="4 3"/><text x="85" y="68" font-size="13" fill="#16a34a" font-weight="700">h</text>
+  <line x1="80" y1="113" x2="135" y2="113" stroke="#e11d48" stroke-width="2"/><text x="102" y="108" font-size="13" fill="#e11d48" font-weight="700">R</text></svg>`;
+}
+function pctTable(t1,p1,t2,p2){
+  const c=v=>/x/.test(v)?`<td style="color:#e11d48;font-weight:800">${v}</td>`:`<td><b>${v}</b></td>`;
+  return `<table class="dt"><tr><th></th><th>כמות</th><th>אחוז (%)</th></tr><tr><th>חלק</th>${c(t1)}${c(p1)}</tr><tr><th>שלם</th>${c(t2)}${c(p2)}</tr></table>`;
+}
+const gradesTable = `<table class="dt"><tr><th>ציון</th><td>60</td><td>70</td><td>80</td><td>90</td><td>100</td></tr><tr><th>מספר תלמידים</th><td>2</td><td>3</td><td>8</td><td>5</td><td>2</td></tr></table>`;
+const kidsTable = `<table class="dt"><tr><th>מספר ילדים במשפחה</th><td>1</td><td>2</td><td>3</td></tr><tr><th>מספר משפחות</th><td>2</td><td>6</td><td>2</td></tr></table>`;
+const exTable = `<table class="dt"><tr><th>ציון</th><td>6</td><td>7</td><td>8</td></tr><tr><th>מספר תלמידים</th><td>1</td><td>4</td><td>5</td></tr></table>`;
+
+const TOPICS = {
+  pct:{name:"אחוזים",icon:"%",bg:"var(--t1)"},
+  stat:{name:"סטטיסטיקה",icon:"📊",bg:"var(--t2)"},
+  geo:{name:"גליל וחרוט",icon:"⬤",bg:"var(--t3)"},
+  tr:{name:"טרנספורמציות",icon:"↔",bg:"var(--t4)"},
+  mix:{name:"חזרה",icon:"✎",bg:"#fff1c2"}
+};
+
+/* learn: הסבר קצר + דוגמה פתורה בשלבים */
+const MISSIONS = [
+{ id:1, date:"2026-11-08", topic:"pct", title:"שיטת הטבלה: מציאת החלק",
+  learn:{ p:[`<b>אחוז</b> פירושו "מתוך 100". אחוזים שכדאי לזכור: 100% = השלם, 50% = חצי, 25% = רבע, 10% = עשירית.`,
+             `לכל שאלת אחוזים משרטטים את אותה טבלה: <b>החלק למעלה, השלם למטה</b>. <b>הכמות בימין, האחוז בשמאל</b>. מול השלם תמיד כותבים <b>100%</b>.`,
+             `פותרים ב<b>כפל בהצלבה</b>: כופלים את שני המספרים שבאלכסון המלא, ומשווים למספר שבאלכסון של x.`],
+          ex:"דוגמה: בכיתה 30 תלמידים. 20% מהם מרכיבים משקפיים. כמה תלמידים מרכיבים משקפיים?",
+          exHtml:pctTable("x","20%","30","100%"),
+          steps:[`כפל בהצלבה: ${M("100 · x = 30 · 20")}`,`${M("100x = 600")}`,`${M("x = 6")} ← 6 תלמידים.`,`בדיקה: 10% מ-30 זה 3, אז 20% זה 6. ✓`] },
+  tool:["חלק למעלה, שלם למטה","כמות בימין, אחוז בשמאל","100% תמיד מול השלם","כפל בהצלבה ← מחלקים במספר שליד x"],
+  qs:[
+   {title:"איפה יושב כל מספר?", prompt:`השאלה: "כמה הם 40% מתוך 50?"`,
+    fields:[{type:"choice",inline:true,label:"איזה מספר יושב למטה, מול 100%?",options:["40","50","100"],ans:1},
+            {type:"choice",inline:true,label:"איפה יושב x?",options:["למעלה, מול 40%","למטה, מול 100%"],ans:0}],
+    hint:"מול 100% יושב תמיד השלם (הסך הכול). x הוא החלק שמחפשים – למעלה.", sol:"למטה: 50 מול 100%. למעלה: x מול 40%."},
+   {title:"20% מ-50 שקלים", prompt:`כמה הם 20% מתוך 50 שקלים?${pctTable("x","20%","50","100%")}`,
+    fields:[{label:`כפל בהצלבה: ${M("100 · x = 50 · 20")}<br>חשבו: ${M("50 · 20 =")}`,ans:1000},{label:`מחלקים ב-100: ${M("x =")}`,ans:10,suf:"₪"}],
+    hint:`${M("50 · 20 = 1000")}. אחר כך מחלקים ב-100.`, sol:`${M("100x = 1000")} ← ${M("x = 10")} ₪`},
+   {title:"נבחרת הספורט", prompt:"בכיתה 30 תלמידים. 40% מהם משתתפים בנבחרת הספורט. כמה תלמידים בנבחרת?",
+    fields:[{label:"כמה תלמידים משתתפים בנבחרת?",ans:12}],
+    hint:`טבלה: למעלה x מול 40%, למטה 30 מול 100%. ${M("100 · x = 30 · 40")}`, sol:`${M("100x = 1200")} ← ${M("x = 12")}`}
+  ]},
+{ id:2, date:"2026-11-09", topic:"pct", title:"שיטת הטבלה: מציאת האחוז",
+  learn:{ p:[`כשיודעים את החלק ואת השלם ושואלים <b>כמה אחוזים</b> – משתמשים באותה טבלה. הפעם ה-x יושב ב<b>עמודת האחוזים</b>, למעלה.`,
+             `<b>זהירות:</b> 100% יושב תמיד למטה, מול השלם (הסך הכול) – אף פעם לא מול החלק.`],
+          ex:"דוגמה: בכד 50 חרוזים, מתוכם 20 אדומים. מה אחוז החרוזים האדומים?",
+          exHtml:pctTable("20","x%","50","100%"),
+          steps:[`כפל בהצלבה: ${M("50 · x = 20 · 100")}`,`${M("50x = 2000")}`,`${M("x = 2000 : 50 = 40")} ← 40% אדומים.`] },
+  tool:["חלק למעלה, שלם למטה","x% יושב למעלה בעמודת האחוזים","100% תמיד מול השלם","כפל בהצלבה ← מחלקים במספר שליד x"],
+  qs:[
+   {title:"מה יושב מול 100%?", prompt:`השאלה: "בדף עבודה 20 שאלות. דנה פתרה נכון 15. מה אחוז ההצלחה?"`,
+    fields:[{type:"choice",inline:true,label:"איזה מספר יושב למטה, מול 100%?",options:["15","20","100"],ans:1}],
+    hint:"מול 100% – הסך הכול (כל השאלות).", sol:"20 – כל השאלות – למטה מול 100%. 15 למעלה מול x%."},
+   {title:"אחוז ההצלחה של דנה", prompt:`${pctTable("15","x%","20","100%")}`,
+    fields:[{label:`כפל בהצלבה: ${M("20 · x = 15 · 100")}<br>חשבו: ${M("15 · 100 =")}`,ans:1500},{label:`מחלקים ב-20: ${M("x =")}`,ans:75,suf:"%"}],
+    hint:`${M("15 · 100 = 1500")}. אחר כך מחלקים ב-20.`, sol:`${M("20x = 1500")} ← ${M("x = 75")}%`},
+   {title:"זריקות לסל", prompt:"באימון כדורסל עומר זרק 50 זריקות וקלע 35 סלים.",
+    fields:[{label:"מה אחוז הקליעות של עומר?",ans:70,suf:"%"}],
+    hint:`טבלה: למעלה 35 מול x%, למטה 50 מול 100%. ${M("50 · x = 35 · 100")}`, sol:`${M("50x = 3500")} ← ${M("x = 70")}%`}
+  ]},
+{ id:3, date:"2026-11-10", topic:"pct", title:"הנחה והתייקרות",
+  learn:{ p:[`פותרים בשני שלבים:`,
+             `<b>שלב 1 – טבלה:</b> מוצאים כמה שקלים הם ההנחה או ההתייקרות (המחיר המקורי למטה מול 100%).`,
+             `<b>שלב 2:</b> בהנחה – <b>מחסירים</b> מהמחיר המקורי. בהתייקרות – <b>מוסיפים</b> למחיר המקורי.`],
+          ex:"דוגמה: חולצה עולה 120 ₪, ויש עליה 25% הנחה. מה המחיר החדש?",
+          exHtml:pctTable("x","25%","120","100%"),
+          steps:[`שלב 1: ${M("100 · x = 120 · 25 = 3000")} ← ${M("x = 30")} ₪ הנחה.`,`שלב 2: ${M("120 − 30 = 90")} ₪.`] },
+  tool:["שלב 1: טבלה ← כמה ₪ ההנחה/ההתייקרות","שלב 2: הנחה ← מחסירים | התייקרות ← מוסיפים","המחיר המקורי למטה מול 100%"],
+  qs:[
+   {title:"כרטיס קולנוע", prompt:`כרטיס קולנוע עלה 50 ₪ והתייקר ב-10%.${pctTable("x","10%","50","100%")}`,
+    fields:[{label:"שלב 1: בכמה ₪ התייקר הכרטיס?",ans:5,suf:"₪"},{label:"שלב 2: מה המחיר החדש?",ans:55,suf:"₪"}],
+    hint:`${M("100 · x = 50 · 10 = 500")} ← x = ? אחר כך מוסיפים ל-50.`, sol:`${M("x = 5")} ; ${M("50 + 5 = 55")} ₪`},
+   {title:"הנחה על נעלי ספורט", prompt:"נעלי ספורט עולות 200 ₪. יש עליהן הנחה של 10%.",
+    fields:[{label:"שלב 1: כמה ₪ ההנחה?",ans:20,suf:"₪"},{label:"שלב 2: כמה עולות הנעליים אחרי ההנחה?",ans:180,suf:"₪"}],
+    hint:`טבלה: x מול 10%, 200 מול 100%. ${M("100 · x = 200 · 10")}. אחר כך מחסירים מ-200.`, sol:`${M("x = 20")} ; ${M("200 − 20 = 180")} ₪`},
+   {title:"כדורגל במבצע", prompt:"כדורגל עולה 100 ₪. בחנות יש הנחה של 30%.",
+    fields:[{label:"מה המחיר אחרי ההנחה?",ans:70,suf:"₪"}],
+    hint:`כשהמחיר 100 – ההנחה היא בדיוק 30 ₪. עכשיו ${M("100 − 30")}.`, sol:`${M("100 · x = 100 · 30")} ← ${M("x = 30")} ; ${M("100 − 30 = 70")} ₪`}
+  ]},
+{ id:4, date:"2026-11-11", topic:"stat", title:"שכיחות, שכיח ושכיחות יחסית",
+  learn:{ p:[`<b>טבלת שכיחויות</b> מראה כמה פעמים הופיע כל ערך. בשורה העליונה – הערכים (למשל ציונים), בשורה התחתונה – <b>השכיחות</b> (כמה תלמידים קיבלו כל ציון).`,
+             `<b>השכיח</b> הוא הערך שהופיע הכי הרבה פעמים. שימו לב: השכיח הוא הציון עצמו, ולא מספר התלמידים.`,
+             `<b>שכיחות יחסית</b> = שכיחות : סך כל הנתונים. אפשר לכתוב אותה כשבר או באחוזים (כופלים ב-100).`],
+          ex:"דוגמה מהטבלה:", exHtml:exTable, steps:[`סך הכול: ${M("1 + 4 + 5 = 10")} תלמידים.`,`השכיח: 8 (קיבלו אותו 5 תלמידים – הכי הרבה).`,`השכיחות היחסית של 7: ${M("4 : 10 = 0.4 = 40%")}`] },
+  tool:["שכיחות = כמה פעמים הופיע ערך","השכיח = הערך עם השכיחות הגדולה ביותר","שכיחות יחסית = שכיחות : סך הכול (× 100 לאחוזים)"],
+  data:`<div class="small" style="text-align:center">ציונים בכיתה:</div>${gradesTable}`,
+  qs:[
+   {title:"כמה תלמידים בסך הכול?", fields:[{label:"כמה תלמידים יש בכיתה?",ans:20}],
+    hint:"מחברים את כל המספרים בשורה התחתונה.", sol:`${M("2 + 3 + 8 + 5 + 2 = 20")}`},
+   {title:"מהו הציון השכיח?", fields:[{type:"choice",label:"בחרו:",options:["8","80","100","20"],ans:1}],
+    hint:"מוצאים את העמודה עם הכי הרבה תלמידים – התשובה היא הציון שמעליה.", sol:"8 תלמידים קיבלו 80 – הכי הרבה. השכיח: 80."},
+   {title:"שכיחות יחסית", fields:[{label:"מהי השכיחות היחסית של הציון 90 (באחוזים)?",ans:25,suf:"%"}],
+    hint:`5 תלמידים מתוך 20: ${M("5 : 20 × 100")}`, sol:`${M("5 : 20 = 0.25 = 25%")}`}
+  ]},
+{ id:5, date:"2026-11-12", topic:"stat", title:"ממוצע ודיאגרמות",
+  learn:{ p:[`<b>ממוצע</b> = סכום כל הנתונים : מספר הנתונים.`,
+             `כשהנתונים בטבלת שכיחויות מחשבים <b>ממוצע משוקלל</b>: כופלים כל ערך בשכיחות שלו, מחברים את כל המכפלות, ומחלקים בסך השכיחויות.`,
+             `<b>דיאגרמת עמודות</b> מתאימה כמעט לכל נתונים. <b>דיאגרמת עיגול</b> מתאימה רק כשכל החלקים יחד הם בדיוק 100%. <b>פיקטוגרמה</b> – כל ציור מייצג כמות קבועה שכתובה במקרא.`],
+          ex:"דוגמה: ממוצע הציונים בטבלה של אתמול:", exHtml:exTable, steps:[`מכפלות: ${M("6×1 = 6")} , ${M("7×4 = 28")} , ${M("8×5 = 40")}`,`סכום: ${M("6 + 28 + 40 = 74")}`,`מחלקים ב-10 תלמידים: ${M("74 : 10 = 7.4")}`] },
+  tool:["ממוצע = סכום : מספר הנתונים","ממוצע משוקלל: ערך × שכיחות ← מחברים ← מחלקים בסך הכול","דיאגרמת עיגול – רק כשהסכום 100%"],
+  qs:[
+   {title:"ממוצע פשוט", fields:[{label:`הממוצע של ${M("4, 6, 8")} =`,ans:6}],
+    hint:"מחברים: 4 + 6 + 8, ומחלקים ב-3.", sol:`${M("18 : 3 = 6")}`},
+   {title:"ממוצע משוקלל", prompt:`שאלו 10 משפחות כמה ילדים יש להן:${kidsTable}`,
+    fields:[{label:`סכום המכפלות: ${M("1×2 + 2×6 + 3×2")} =`,ans:20},{label:"הממוצע (הסכום : 10 משפחות) =",ans:2}],
+    hint:`${M("1×2 = 2")} , ${M("2×6 = 12")} , ${M("3×2 = 6")} – מחברים ומחלקים ב-10.`, sol:`${M("2 + 12 + 6 = 20")} ; ${M("20 : 10 = 2")}`},
+   {title:"איזו דיאגרמה מתאימה?", prompt:"בסקר שאלו אנשים מה קנו באינטרנט. כל אחד יכול היה לבחור כמה סוגים. התוצאות: כרטיסים 48%, גאדג'טים 35%, תיירות 32%, ביגוד 24% ועוד. סכום כל האחוזים: 213%.",
+    fields:[{type:"choice",label:"אפשר להציג את הנתונים בדיאגרמת עיגול?",options:["כן, כל נתון אפשר להציג בעיגול","לא – הסכום יותר מ-100%, כי אנשים בחרו כמה סוגים","כן, אם מעגלים את המספרים"],ans:1}],
+    hint:"עיגול שלם = 100% בדיוק. כמה יצא כאן?", sol:"לא. עיגול מתאים רק כשהחלקים יחד הם 100%. כאן מתאימה דיאגרמת עמודות."}
+  ]},
+{ id:6, date:"2026-11-15", topic:"geo", title:"מעגל: רדיוס, קוטר ושטח",
+  learn:{ p:[`<b>רדיוס (R)</b> – המרחק ממרכז המעגל אל המעגל. <b>קוטר (d)</b> – קטע שעובר דרך המרכז מצד לצד. הקוטר שווה לפעמיים הרדיוס: ${M("d = 2R")}.`,
+             `אם נתון קוטר – מחלקים ב-2 ומקבלים רדיוס.`,
+             `<b>שטח העיגול</b>: ${M("S = π · R²")}. ${M("R²")} פירושו ${M("R × R")}. המספר π שווה בערך 3.14. בתרגול כאן משאירים את התשובה עם π, למשל ${M("25π")}.`],
+          ex:"דוגמה: מה שטח עיגול שהקוטר שלו 10 ס\"מ?", steps:[`רדיוס: ${M("10 : 2 = 5")}`,`${M("R² = 5 × 5 = 25")}`,`שטח: ${M("25π")} סמ"ר (בערך ${M("25 × 3.14 = 78.5")}).`] },
+  tool:[`${M("d = 2R")} ← נתון קוטר? מחלקים ב-2`,`שטח עיגול: ${M("S = π · R²")}`,`${M("R² = R × R")}`],
+  qs:[
+   {title:"מספר בריבוע", prompt:"מספר בריבוע = המספר כפול עצמו.",
+    fields:[{label:`${M("3²")} =`,ans:9},{label:`${M("5²")} =`,ans:25},{label:`${M("10²")} =`,ans:100}],
+    hint:`${M("3² = 3 × 3")}`, sol:"9 , 25 , 100"},
+   {title:"שטח ורדיוס", fields:[{label:"עיגול שהרדיוס שלו 4 ס\"מ. השטח שלו =",ans:16,suf:"π"},{label:"עיגול שהקוטר שלו 12 ס\"מ. הרדיוס שלו =",ans:6,suf:"ס\"מ"}],
+    hint:`שטח: ${M("4 × 4")} וכותבים π. רדיוס: קוטר : 2.`, sol:`${M("π · 4² = 16π")} ; ${M("12 : 2 = 6")}`},
+   {title:"שטח מתוך קוטר", fields:[{label:"עיגול שהקוטר שלו 6 ס\"מ. השטח שלו =",ans:9,suf:"π"}],
+    hint:"קודם רדיוס: 6 : 2 = 3. אחר כך 3 × 3.", sol:`${M("R = 3")} ← ${M("π · 9 = 9π")}`}
+  ]},
+{ id:7, date:"2026-11-16", topic:"geo", title:"נפח הגליל",
+  learn:{ p:[`<b>גליל</b> בנוי משני בסיסים עגולים שווים ומ<b>מעטפת</b>. ל-R קוראים רדיוס הבסיס, ול-h הגובה.`,
+             `<b>נפח הגליל</b> = שטח הבסיס × הגובה: ${M("V = π · R² · h")}. אפשר לדמיין ערימה של עיגולים זה על זה עד הגובה h.`,
+             `אם פורסים את המעטפת מקבלים <b>מלבן</b>: אורכו = היקף הבסיס ${M("2πR")}, ורוחבו = הגובה h. לכן שטח המעטפת: ${M("2π · R · h")}.`],
+          ex:`דוגמה: גליל עם ${M("R = 3")} ס"מ ו-${M("h = 2")} ס"מ.`, steps:[`שטח הבסיס: ${M("π · 3 · 3 = 9π")}`,`נפח: ${M("9π · 2 = 18π")} סמ"ק`] },
+  tool:[`נפח: ${M("V = π · R² · h")}`,`שטח בסיס: ${M("π · R²")}`,`מעטפת (מלבן): ${M("2π · R · h")}`],
+  data:`<div class="svgbox">${cylinderSVG()}</div>`,
+  qs:[
+   {title:"כפל", fields:[{label:`${M("16 × 10")} =`,ans:160},{label:`${M("9 × 5")} =`,ans:45}],
+    hint:"כפול 10 ← מוסיפים 0 בסוף.", sol:"160 , 45"},
+   {title:"נפח של גליל", prompt:`גליל: ${M("R = 4")} ס"מ, ${M("h = 10")} ס"מ.`,
+    fields:[{label:"שטח הבסיס =",ans:16,suf:"π"},{label:"הנפח =",ans:160,suf:"π"}],
+    hint:`בסיס: ${M("4 × 4 = 16")}. נפח: בסיס × 10.`, sol:`${M("16π")} ; ${M("16π · 10 = 160π")}`},
+   {title:"מכל מים", prompt:"מכל מים בצורת גליל: הקוטר 6 מטר, הגובה 5 מטר.",
+    fields:[{label:"הנפח של המכל =",ans:45,suf:"π"}],
+    hint:"נתון קוטר! R = 3. בסיס: 9π. כפול 5.", sol:`${M("R = 3")} ; ${M("9π · 5 = 45π")} מ"ק`}
+  ]},
+{ id:8, date:"2026-11-17", topic:"geo", title:"חרוט",
+  learn:{ p:[`<b>חרוט</b> בנוי מבסיס עגול ומקודקוד. הגובה h יורד מהקודקוד אל מרכז הבסיס.`,
+             `אם לחרוט ולגליל יש אותו בסיס ואותו גובה, צריך למלא את החרוט 3 פעמים כדי למלא את הגליל. לכן <b>נפח החרוט הוא שליש מנפח הגליל</b>:`,
+             `${M("V = π · R² · h : 3")}. ולהפך: הגליל גדול פי 3 מהחרוט.`],
+          ex:`דוגמה: חרוט עם ${M("R = 3")}, ${M("h = 5")}.`, steps:[`בסיס: ${M("9π")}`,`בסיס × גובה: ${M("9π · 5 = 45π")}`,`מחלקים ב-3: ${M("45π : 3 = 15π")}`] },
+  tool:[`נפח חרוט: ${M("π · R² · h : 3")}`,"אותו בסיס ואותו גובה: חרוט = גליל : 3","גליל = חרוט × 3"],
+  data:`<div class="svgbox">${coneSVG()}</div>`,
+  qs:[
+   {title:"חילוק ב-3", fields:[{label:`${M("36 : 3")} =`,ans:12},{label:`${M("60 : 3")} =`,ans:20}],
+    hint:"כמה פעמים 3 נכנס במספר?", sol:"12 , 20"},
+   {title:"גליל ↔ חרוט", fields:[{label:"גליל שנפחו 90π. חרוט עם אותו בסיס ואותו גובה – נפחו =",ans:30,suf:"π"},{label:"חרוט שנפחו 25π. גליל עם אותו בסיס ואותו גובה – נפחו =",ans:75,suf:"π"}],
+    hint:"גליל ← חרוט: מחלקים ב-3. חרוט ← גליל: כופלים ב-3.", sol:`${M("90 : 3 = 30")} ; ${M("25 × 3 = 75")}`},
+   {title:"נפח חרוט", prompt:`חרוט: ${M("R = 2")} ס"מ, ${M("h = 15")} ס"מ.`,
+    fields:[{label:"נפח החרוט =",ans:20,suf:"π"}],
+    hint:`${M("2 × 2 = 4")} , ${M("4 × 15 = 60")} , ואז : 3.`, sol:`${M("π · 4 · 15 : 3 = 60π : 3 = 20π")}`}
+  ]},
+{ id:9, date:"2026-11-18", topic:"tr", title:"הזזה במערכת צירים",
+  learn:{ p:[`במערכת צירים כל נקודה נכתבת ${M("(x , y)")}: המספר הראשון – כמה ימינה או שמאלה, השני – כמה למעלה או למטה.`,
+             `<b>הזזה</b> מזיזה צורה בלי לסובב ובלי להפוך אותה. הזזה ימינה מוסיפה ל-x, שמאלה מחסירה מ-x. למעלה מוסיפה ל-y, למטה מחסירה מ-y.`,
+             `אחרי הזזה הצורה <b>חופפת</b> לצורה המקורית – אותו גודל ואותה צורה.`],
+          ex:`דוגמה: ${M("A(1, 4)")} זזה 2 ימינה ו-3 למטה.`, steps:[`x: ${M("1 + 2 = 3")}`,`y: ${M("4 − 3 = 1")}`,`הנקודה החדשה: ${M("A'(3, 1)")}`] },
+  tool:["ימינה ← +x | שמאלה ← −x","למעלה ← +y | למטה ← −y",`${M("(x , y)")}: קודם x, אחר כך y`],
+  qs:[
+   {title:"פלוס ומינוס", prompt:"הכפתור ± מוסיף מינוס.",
+    fields:[{label:`${M("1 − 3")} =`,ans:-2,neg:true},{label:`${M("−2 + 5")} =`,ans:3,neg:true},{label:`${M("4 − 4")} =`,ans:0,neg:true}],
+    hint:"על ציר המספרים: מ-1 הולכים 3 צעדים שמאלה.", sol:"−2 , 3 , 0"},
+   {title:"הזזת נקודות", prompt:`<div class="svgbox">${grid([{x:2,y:1,label:"A"},{x:4,y:5,label:"B",color:"#2f6fdf"}])}</div>`,
+    fields:[{type:"point",label:`${M("A(2, 1)")} זזה 3 ימינה. לאן הגיעה?`,ans:[5,1]},{type:"point",label:`${M("B(4, 5)")} זזה 2 למטה. לאן הגיעה?`,ans:[4,3]}],
+    hint:"ימינה ← x גדל. למטה ← y קטן. השיעור השני לא משתנה.", sol:`${M("A'(5, 1)")} , ${M("B'(4, 3)")}`},
+   {title:"הזזה בשני כיוונים", fields:[{type:"point",label:`${M("C(1, 2)")} זזה 3 שמאלה ו-2 למטה. לאן הגיעה?`,ans:[-2,0]}],
+    hint:`x: ${M("1 − 3")}.  y: ${M("2 − 2")}.`, sol:`${M("C'(−2, 0)")}`}
+  ]},
+{ id:10, date:"2026-11-19", topic:"tr", title:"שיקוף וסיבוב",
+  learn:{ p:[`<b>שיקוף</b> הוא כמו מראה. בשיקוף ביחס ל<b>ציר x</b> הנקודה "קופצת" מעל/מתחת לציר: x נשאר, y מחליף סימן. בשיקוף ביחס ל<b>ציר y</b>: y נשאר, x מחליף סימן.`,
+             `<b>סיבוב</b> מסובב צורה סביב נקודה קבועה. בסיבוב של 180° סביב ראשית הצירים ${M("(0, 0)")} שני השיעורים מחליפים סימן.`,
+             `בהזזה, בשיקוף ובסיבוב הצורה החדשה <b>חופפת</b> למקורית.`],
+          ex:`דוגמה: הנקודה ${M("(3, 2)")}`, steps:[`שיקוף בציר x: ${M("(3, −2)")}`,`שיקוף בציר y: ${M("(−3, 2)")}`,`סיבוב 180°: ${M("(−3, −2)")}`] },
+  tool:[`שיקוף בציר x: ${M("(x, y) → (x, −y)")}`,`שיקוף בציר y: ${M("(x, y) → (−x, y)")}`,`סיבוב 180°: ${M("(x, y) → (−x, −y)")}`],
+  qs:[
+   {title:"איזו טרנספורמציה?", fields:[
+     {type:"choice",inline:true,label:"השתקפות של הר במי אגם",options:["הזזה","שיקוף","סיבוב"],ans:1},
+     {type:"choice",inline:true,label:"להבים של מאוורר שמסתובבים",options:["הזזה","שיקוף","סיבוב"],ans:2},
+     {type:"choice",inline:true,label:"מעלית שעולה קומה",options:["הזזה","שיקוף","סיבוב"],ans:0}],
+    hint:"מראה = שיקוף. מסתובב סביב נקודה = סיבוב. זז בלי להסתובב = הזזה.", sol:"שיקוף , סיבוב , הזזה"},
+   {title:"שיקוף נקודה", prompt:`<div class="svgbox">${grid([{x:2,y:3,label:"A"}])}</div>`,
+    fields:[{type:"point",label:`${M("A(2, 3)")} – שיקוף ביחס לציר x:`,ans:[2,-3]},{type:"point",label:`${M("A(2, 3)")} – שיקוף ביחס לציר y:`,ans:[-2,3]}],
+    hint:"ציר x ← y מחליף סימן.  ציר y ← x מחליף סימן.", sol:`${M("(2, −3)")} , ${M("(−2, 3)")}`},
+   {title:"סיבוב של 180°", fields:[{type:"point",label:`${M("B(4, 1)")} – סיבוב של 180° סביב ${M("(0, 0)")}:`,ans:[-4,-1]}],
+    hint:"ב-180° שני השיעורים מחליפים סימן.", sol:`${M("(−4, −1)")}`}
+  ]},
+{ id:11, date:"2026-11-22", topic:"mix", title:"חזרה – תרגיל מכל נושא",
+  learn:{ p:[`<b>אחוזים:</b> טבלה – חלק למעלה, שלם למטה מול 100%, כפל בהצלבה. הנחה ← מחסירים, התייקרות ← מוסיפים.`,
+             `<b>סטטיסטיקה:</b> שכיח = הערך שהופיע הכי הרבה. ממוצע = סכום : מספר הנתונים.`,
+             `<b>גליל וחרוט:</b> גליל ${M("π · R² · h")}, חרוט = גליל : 3.`,
+             `<b>טרנספורמציות:</b> שיקוף בציר y ← x מחליף סימן; שיקוף בציר x ← y מחליף סימן.`],
+          ex:"", steps:[] },
+  tool:["אחוזים: טבלה + כפל בהצלבה","שכיח / ממוצע = סכום : כמות",`גליל ${M("π · R² · h")}, חרוט = גליל : 3`,"שיקוף בציר y ← x מחליף סימן"],
+  qs:[
+   {title:"אחוזים", prompt:"משחק עולה 80 ₪, ויש עליו הנחה של 25%.",
+    fields:[{label:"כמה עולה המשחק אחרי ההנחה?",ans:60,suf:"₪"}],
+    hint:`טבלה: x מול 25%, 80 מול 100%. ${M("100 · x = 80 · 25")}. אחר כך מחסירים מ-80.`, sol:`${M("100x = 2000")} ← ${M("x = 20")} ; ${M("80 − 20 = 60")} ₪`},
+   {title:"סטטיסטיקה", prompt:`הנתונים: ${M("5, 7, 7, 9, 7")}`,
+    fields:[{label:"השכיח =",ans:7},{label:"הממוצע =",ans:7}],
+    hint:`שכיח: איזה מספר מופיע הכי הרבה? ממוצע: ${M("5+7+7+9+7 = 35")} ואז : 5.`, sol:`שכיח 7 ; ${M("35 : 5 = 7")}`},
+   {title:"גליל וחרוט", prompt:`גליל: ${M("R = 3")}, ${M("h = 4")}.`,
+    fields:[{label:"נפח הגליל =",ans:36,suf:"π"},{label:"נפח חרוט עם אותו בסיס ואותו גובה =",ans:12,suf:"π"}],
+    hint:`${M("3 × 3 = 9")} , ${M("9 × 4 = 36")}. חרוט: 36 : 3.`, sol:`${M("36π")} ; ${M("12π")}`},
+   {title:"טרנספורמציות", fields:[{type:"point",label:`${M("P(3, 2)")} – שיקוף ביחס לציר y:`,ans:[-3,2]}],
+    hint:"ציר y ← x מחליף סימן.", sol:`${M("(−3, 2)")}`}
+  ]}
+];
+
+/* ============ מצב ============ */
+let state = {done:{}};
+function load(){ try{ const s=localStorage.getItem(STORE_KEY); if(s) state=Object.assign(state,JSON.parse(s)); }catch(e){} }
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
+function todayStr(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function isOpen(m){ return TEACHER_MODE || todayStr() >= m.date; }
+const HEB_DAYS=["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
+function fmtDate(s){ const [y,mo,da]=s.split("-").map(Number); const d=new Date(y,mo-1,da,12); return `יום ${HEB_DAYS[d.getDay()]} ${d.getDate()}.${d.getMonth()+1}`; }
+const $ = id => document.getElementById(id);
+
+/* ============ מסך בית ============ */
+function renderHome(){
+  const doneCount=Object.keys(state.done).length;
+  let html = `<div class="top"><div class="school">חט"ב עמי אסף • מתמטיקה ח' ב1</div><h1>תרגול יומי</h1>
+  <div class="sub">כל יום: הסבר קצר ו-3 תרגילים.</div>
+  <div class="stats"><div class="stat"><b>${doneCount}/${MISSIONS.length}</b><span>משימות בוצעו</span></div></div></div>`;
+  const weeks=[["שבוע 1 – אחוזים וסטטיסטיקה",[1,2,3,4,5]],["שבוע 2 – גליל, חרוט וטרנספורמציות",[6,7,8,9,10]],["סיכום",[11]]];
+  const t=todayStr();
+  weeks.forEach(([wt,ids])=>{
+    html+=`<div class="weekhead">${wt}</div>`;
+    ids.forEach(id=>{
+      const m=MISSIONS.find(x=>x.id===id), tp=TOPICS[m.topic], d=state.done[id], open=isOpen(m);
+      let cls="mission", tag="", st="";
+      if(d){ cls+=" done"; st=`✓ בוצע`; }
+      else if(!open){ cls+=" locked"; st="🔒"; }
+      else if(m.date===t){ cls+=" today"; tag=`<span class="tag today">היום</span>`; st="פתיחה"; }
+      else { cls+=" late"; tag=`<span class="tag late">להשלים</span>`; st="פתיחה"; }
+      html+=`<div class="${cls}" data-id="${id}"><div class="ic" style="background:${tp.bg}">${tp.icon}</div>
+      <div class="info"><div class="t">משימה ${id}: ${m.title}${tag}</div><div class="d">${fmtDate(m.date)} • ${tp.name}</div></div><div class="st">${st}</div></div>`;
+    });
+  });
+  html+=`<div class="small" style="text-align:center;margin-top:14px">משימה נפתחת ביום שלה. משימה שפוספסה אפשר להשלים בכל זמן.</div>`;
+  if(TEACHER_MODE) html+=`<div style="height:10px"></div><a class="btn" href="${T_ALL}" style="text-decoration:none">כל התרגילים והתשובות</a><div style="height:8px"></div><button class="btn" id="rst" style="background:#eef2f8;color:var(--ink)">איפוס ההתקדמות של המורה</button>`;
+  if(TEACHER_MODE) html=`<div style="background:#1f2a37;color:#fff;border-radius:12px;padding:8px 12px;margin-bottom:10px;font-size:14px;font-weight:700">🔑 מצב מורה – כל המשימות פתוחות. ההתקדמות כאן נפרדת מזו של התלמיד.</div>`+html;
+  $("app").innerHTML=html;
+  if($("rst")) $("rst").onclick=()=>{ state.done={}; save(); renderHome(); };
+  document.querySelectorAll(".mission").forEach(el=>{
+    el.onclick=()=>{ const m=MISSIONS.find(x=>x.id==el.dataset.id); if(!isOpen(m) && !state.done[m.id]) return; startMission(m); };
+  });
+  window.scrollTo(0,0);
+}
+
+/* ============ משימה ============ */
+let run=null;
+function headHTML(m){ const tp=TOPICS[m.topic];
+  return `<button class="back" id="bk">→ חזרה לרשימה</button>
+  <div class="mhead" style="background:${tp.bg}"><div class="k">משימה ${m.id} • ${fmtDate(m.date)} • ${tp.name}</div><h2>${m.title}</h2></div>`; }
+function startMission(m){
+  run={m, i:-1};
+  const L=m.learn;
+  $("app").innerHTML = headHTML(m) + `<div class="card learn"><h3>📘 הסבר</h3>${L.p.map(x=>`<p>${x}</p>`).join("")}
+    ${L.steps.length?`<div class="steps"><div class="h">${L.ex}</div>${L.exHtml||""}<ol>${L.steps.map(s=>`<li>${s}</li>`).join("")}</ol></div>`:""}</div>
+    ${m.data?`<div class="card">${m.data}</div>`:""}
+    <button class="btn" id="go">לתרגילים (${m.qs.length}) ←</button>`;
+  $("bk").onclick=renderHome; $("go").onclick=()=>{ run.i=0; renderQuestion(); };
+  window.scrollTo(0,0);
+}
+function renderQuestion(){
+  const {m,i}=run, q=m.qs[i];
+  run.tries=0; run.solved=false; run.choiceSel={};
+  let html = headHTML(m) + `<details class="tool"><summary>🧰 ארגז כלים</summary><ul>${m.tool.map(t=>`<li>${t}</li>`).join("")}</ul></details>
+  <div class="dots">${m.qs.map((_,k)=>`<div class="dot ${k<i?'fin':(k===i?'on':'')}"></div>`).join("")}</div>
+  <div class="card"><div class="qk">תרגיל ${i+1} מתוך ${m.qs.length}</div><div class="qtitle">${q.title}</div>
+  ${m.data?`<div class="prompt">${m.data}</div>`:""}
+  ${q.prompt?`<div class="prompt">${q.prompt}</div>`:""}
+  ${q.fields.map((f,k)=>fieldHTML(f,k)).join("")}
+  <div class="fb" id="fb"></div>
+  <div id="acts"><button class="btn" id="chk">בדיקה</button></div></div>`;
+  $("app").innerHTML=html; window.scrollTo(0,0);
+  $("bk").onclick=()=>{ run=null; renderHome(); };
+  $("chk").onclick=check;
+  document.querySelectorAll(".pm").forEach(b=>b.onclick=()=>{ const inp=$(b.dataset.for); const v=inp.value.trim(); inp.value = /^[−-]/.test(v) ? v.slice(1) : "-"+v; inp.focus(); });
+  document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{
+    if(run.solved) return;
+    const k=b.dataset.k; document.querySelectorAll(`.choice[data-k="${k}"]`).forEach(x=>x.classList.remove("sel","wrong","good"));
+    b.classList.add("sel"); run.choiceSel[k]=+b.dataset.o;
+  });
+  document.querySelectorAll(".field input").forEach(inp=>inp.addEventListener("keydown",e=>{ if(e.key==="Enter") check(); }));
+}
+function fieldHTML(f,k){
+  if(f.type==="choice") return `<div class="field"><div class="lab">${f.label}</div><div class="choices ${f.inline?'inline':''}">${f.options.map((o,j)=>`<button class="choice" data-k="${k}" data-o="${j}">${o}</button>`).join("")}</div></div>`;
+  if(f.type==="point") return `<div class="field"><div class="lab">${f.label}</div>
+    <div class="pt">( <input id="f${k}x" inputmode="decimal" autocomplete="off" placeholder="x"><button class="pm" data-for="f${k}x" type="button">±</button> ,
+    <input id="f${k}y" inputmode="decimal" autocomplete="off" placeholder="y"><button class="pm" data-for="f${k}y" type="button">±</button> )</div></div>`;
+  return `<div class="field"><div class="lab">${f.label}</div><div class="inwrap"><input id="f${k}" inputmode="decimal" autocomplete="off">${f.neg?`<button class="pm" data-for="f${k}" type="button">±</button>`:""}${f.suf?`<span class="suf">${f.suf}</span>`:""}</div></div>`;
+}
+function num(v){ v=String(v).trim().replace(/[−–]/g,"-").replace(/,/g,".").replace(/[%π₪\s]/g,""); if(v===""||v==="-") return NaN; return Number(v); }
+const eq=(a,b)=>Math.abs(a-b)<1e-6;
+function check(){
+  if(run.solved) return;
+  const q=run.m.qs[run.i]; let allOk=true, anyEmpty=false;
+  q.fields.forEach((f,k)=>{
+    if(f.type==="choice"){
+      const s=run.choiceSel[k], btns=document.querySelectorAll(`.choice[data-k="${k}"]`);
+      if(s===undefined){ anyEmpty=true; allOk=false; return; }
+      btns.forEach(b=>b.classList.remove("good","wrong"));
+      if(s===f.ans) btns[s].classList.add("good"); else { btns[s].classList.add("wrong"); allOk=false; }
+    } else if(f.type==="point"){
+      ["x","y"].forEach((c,ci)=>{ const inp=$(`f${k}${c}`), v=num(inp.value); inp.classList.remove("good","wrong");
+        if(isNaN(v)){ anyEmpty=true; allOk=false; return; }
+        if(eq(v,f.ans[ci])) inp.classList.add("good"); else { inp.classList.add("wrong"); allOk=false; } });
+    } else {
+      const inp=$(`f${k}`), v=num(inp.value); inp.classList.remove("good","wrong");
+      if(isNaN(v)){ anyEmpty=true; allOk=false; return; }
+      if(eq(v,f.ans)) inp.classList.add("good"); else { inp.classList.add("wrong"); allOk=false; }
+    }
+  });
+  const fb=$("fb");
+  if(anyEmpty && !document.querySelector(".wrong")){ fb.className="fb hint"; fb.innerHTML="חסרה תשובה – מלאו את כל המשבצות."; return; }
+  if(allOk){
+    run.solved=true; fb.className="fb ok"; fb.innerHTML="✓ נכון";
+    $("acts").innerHTML=`<button class="btn ok" id="nx">${run.i<run.m.qs.length-1?"לתרגיל הבא ←":"סיום המשימה"}</button>`;
+    $("nx").onclick=next; return;
+  }
+  run.tries++;
+  if(run.tries<3){ fb.className="fb hint"; fb.innerHTML=`לא נכון. רמז: ${q.hint}<br><span class="small">תקנו את המשבצות האדומות ובדקו שוב.</span>`; }
+  else { fb.className="fb sol"; fb.innerHTML=`פתרון: <b>${q.sol}</b><br><span class="small">כתבו את התשובה הנכונה ולחצו "בדיקה" כדי להמשיך.</span>`; }
+}
+function next(){ run.i++; if(run.i<run.m.qs.length) renderQuestion(); else finishMission(); }
+
+function finishMission(){
+  const m=run.m, now=new Date();
+  const when=`${now.getDate()}.${now.getMonth()+1} בשעה ${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
+  if(!state.done[m.id]) { state.done[m.id]={when}; save(); }
+  run=null;
+  const rec=state.done[m.id];
+  $("app").innerHTML = headHTML(m) + `<div class="card fin">
+    <div class="big">✓ משימה ${m.id} בוצעה</div>
+    <div>${m.title}</div>
+    <div class="parent">להורה: המשימה של ${fmtDate(m.date)} הושלמה ב-${rec.when}.<br>לסמן ✓ ולחתום בדף המעקב.</div>
+    <button class="btn" id="hm">חזרה לרשימה</button></div>`;
+  $("bk").onclick=renderHome; $("hm").onclick=renderHome; window.scrollTo(0,0);
+}
+
+
+/* ============ תצוגת מורה: כל התרגילים והתשובות ============ */
+function ansText(f){
+  if(f.type==="choice") return f.options[f.ans];
+  if(f.type==="point") return M(`(${f.ans[0]}, ${f.ans[1]})`.replace(/-/g,"−"));
+  return M(String(f.ans).replace(/-/g,"−") + (f.suf==="π"?"π":"")) + (f.suf && f.suf!=="π" ? " "+f.suf : "");
+}
+function renderAll(){
+  let h=`<div class="top"><div class="school">חט"ב עמי אסף • מתמטיקה ח' ב1</div><h1>כל המשימות – תצוגת מורה</h1><div class="sub">הסבר, דוגמה, תרגילים ותשובות</div></div>
+  <button class="btn" id="hm" style="margin-bottom:12px">לתצוגת התלמיד</button>`;
+  MISSIONS.forEach(m=>{ const tp=TOPICS[m.topic], L=m.learn;
+    h+=`<div class="mhead" style="background:${tp.bg}"><div class="k">משימה ${m.id} • ${fmtDate(m.date)} • ${tp.name}</div><h2>${m.title}</h2></div>
+    <div class="card learn"><h3>📘 הסבר</h3>${L.p.map(x=>`<p>${x}</p>`).join("")}
+    ${L.steps.length?`<div class="steps"><div class="h">${L.ex}</div>${L.exHtml||""}<ol>${L.steps.map(x=>`<li>${x}</li>`).join("")}</ol></div>`:""}</div>
+    ${m.data?`<div class="card">${m.data}</div>`:""}`;
+    m.qs.forEach((q,i)=>{
+      h+=`<div class="card"><div class="qk">תרגיל ${i+1}</div><div class="qtitle">${q.title}</div>${q.prompt?`<div class="prompt">${q.prompt}</div>`:""}
+      <ul style="margin:0;padding-inline-start:20px">${q.fields.map(f=>`<li style="margin:6px 0">${f.label}${f.type==="choice"?` <span class="small">(${f.options.join(" / ")})</span>`:""}<br><b style="color:var(--ok)">תשובה: ${ansText(f)}</b></li>`).join("")}</ul>
+      <div class="small" style="margin-top:6px">רמז: ${q.hint}</div></div>`;
+    });
+  });
+  $("app").innerHTML=h; $("hm").onclick=()=>{ location.hash=T_OPEN; };
+  window.scrollTo(0,0);
+}
+
+load(); if(location.hash===T_ALL) renderAll(); else renderHome();
+window.addEventListener("hashchange",()=>location.reload());
+</script>
+</body>
+</html>
