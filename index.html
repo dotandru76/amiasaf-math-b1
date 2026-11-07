@@ -21,6 +21,17 @@ html,body{margin:0;padding:0}
 body{-webkit-text-size-adjust:100%;text-size-adjust:100%;font-family:'Rubik',Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.55;-webkit-tap-highlight-color:transparent}
 .wrap{max-width:560px;margin:0 auto;padding:14px 14px 60px}
 .m{direction:ltr;unicode-bidi:isolate;display:inline-block;font-weight:600;white-space:nowrap}
+.ml{direction:ltr;unicode-bidi:isolate;display:inline-block;text-align:left}
+.field .lab > .ml{font-size:20px;font-weight:700}
+.choice .ml{font-size:19px;font-weight:600}
+.eqb{direction:ltr;unicode-bidi:isolate;display:grid;grid-template-columns:max-content max-content;gap:8px 22px;justify-content:center;align-items:center;
+  background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:12px 16px;margin:8px 0;font-size:21px;font-weight:600;text-align:left}
+.eqb .e,.eqb .op{direction:ltr;unicode-bidi:isolate;text-align:left}
+.eqb .e{white-space:nowrap;display:flex;align-items:center;gap:6px}
+.eqb .op{color:#dc2626;font-weight:700;font-size:18px;white-space:nowrap}
+.eqb input{width:92px;font:inherit;font-size:21px;font-weight:700;text-align:center;padding:6px;border:2px solid var(--line);border-radius:10px;background:#fff}
+.eqb input.good{border-color:var(--ok);background:var(--okbg)}
+.eqb input.wrong{border-color:var(--bad);background:var(--badbg)}
 h1,h2,h3{margin:0}
 .top{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border-radius:18px;padding:16px 18px;margin-bottom:14px}
 .top .school{font-size:13px;opacity:.85}
@@ -112,6 +123,11 @@ const TEACHER_MODE = [T_OPEN,T_ALL].includes(location.hash||"");
 const STORE_KEY = TEACHER_MODE ? "amiasaf_b1_daily_teacher" : "amiasaf_b1_daily_v2";
 
 const M = s => `<span class="m">${s}</span>`;
+const HEB = /[\u0590-\u05FF]/;
+/* טקסט בלי עברית (ביטוי מתמטי בלבד) מוצג תמיד משמאל לימין */
+const B = s => (s===undefined||s===null||s==="") ? "" : (HEB.test(String(s).replace(/<[^>]+>/g,"")) ? s : `<span class="ml">${s}</span>`);
+/* שלבי פתרון משוואה: [[משוואה, פעולה], ...] */
+function eqSteps(rows){ return `<div class="eqb">${rows.map(r=>`<div class="e">${r[0]}</div><div class="op">${r[1]||""}</div>`).join("")}</div>`; }
 function grid(points){
   const min=-6,max=6,c=20,pad=14,size=(max-min)*c+pad*2;
   const X=x=>pad+(x-min)*c, Y=y=>pad+(max-y)*c;
@@ -164,41 +180,46 @@ const TOPICS = {
 const MISSIONS = [
 { id:1, date:"2026-11-08", topic:"eq", title:"משוואות – כמו מאזניים",
   learn:{ p:[`משוואה היא כמו <b>מאזניים</b>: כל פעולה שעושים בצד אחד – חובה לעשות גם בצד השני.`,
-             `את הפעולה רושמים בצד, אחרי לוכסן, למשל ${M("/ −2x")}.`,
-             `סדר העבודה: 1) מעבירים את כל ה-x לצד אחד. 2) מעבירים את המספרים לצד השני. 3) מחלקים במספר שליד x.`,
-             `בסוף אפשר לבדוק: מציבים את התשובה במשוואה ובודקים ששני הצדדים שווים.`],
-          ex:`דוגמה: ${M("4x − 11 = 2x + 5")}`,
-          steps:[`${M("/ −2x")} ← ${M("2x − 11 = 5")}`,`${M("/ +11")} ← ${M("2x = 16")}`,`${M("/ :2")} ← ${M("x = 8")}`,`בדיקה: ${M("4·8 − 11 = 21")} , ${M("2·8 + 5 = 21")} ✓`] },
-  tool:["כל פעולה – בשני הצדדים",`x לצד אחד, מספרים לצד שני`,"בסוף מחלקים במספר שליד x"],
+             `את הפעולה רושמים <b>באדום</b> ליד המשוואה, אחרי לוכסן. למשל ${M("/ −2x")} פירושו: מחסירים ${M("2x")} משני הצדדים.`,
+             `סדר העבודה: 1) מעבירים את כל ה-${M("x")} לצד אחד. 2) מעבירים את המספרים לצד השני. 3) מחלקים במספר שליד ה-${M("x")}.`,
+             `בסוף בודקים: מציבים את התשובה במשוואה – שני הצדדים צריכים לצאת שווים.`],
+          ex:"דוגמה:",
+          exHtml:eqSteps([["4x − 11 = 2x + 5","/ −2x"],["2x − 11 = 5","/ +11"],["2x = 16","/ :2"],["x = 8",""]]),
+          steps:[`בדיקה: ${M("4·8 − 11 = 21")} וגם ${M("2·8 + 5 = 21")} ✓`] },
+  tool:["כל פעולה – בשני הצדדים",`כל ה-${M("x")} לצד אחד, המספרים לצד השני`,`בסוף מחלקים במספר שליד ה-${M("x")}`],
   qs:[
-   {title:"משוואה בשני צעדים", prompt:`${M("3x + 4 = 19")}`,
-    fields:[{label:`${M("/ −4")} ← ${M("3x =")}`,ans:15},{label:`${M("/ :3")} ← ${M("x =")}`,ans:5}],
-    hint:`${M("19 − 4 = 15")}. אחר כך ${M("15 : 3")}.`, sol:`${M("3x = 15")} ← ${M("x = 5")}`},
-   {title:"x בשני הצדדים", prompt:`${M("4x + 12 = 60 − 8x")}`,
-    fields:[{label:`${M("/ +8x")} ואחר כך ${M("/ −12")} ← ${M("12x =")}`,ans:48},{label:`${M("/ :12")} ← ${M("x =")}`,ans:4}],
-    hint:`${M("4x + 8x = 12x")} , ${M("60 − 12 = 48")}`, sol:`${M("12x = 48")} ← ${M("x = 4")}`},
-   {title:"כינוס ותשובה שלילית", prompt:`${M("−2x − 2 + 8 = 12")}`,
-    fields:[{label:`כינוס: ${M("−2x + 6 = 12")} ← ${M("/ −6")} ← ${M("−2x =")}`,ans:6,neg:true},{label:`${M("/ :(−2)")} ← ${M("x =")}`,ans:-3,neg:true}],
-    hint:`${M("12 − 6 = 6")}. מחלקים ב-(−2): פלוס חלקי מינוס = מינוס.`, sol:`${M("−2x = 6")} ← ${M("x = −3")}`}
+   {title:"משוואה בשני צעדים",
+    fields:[{type:"eqchain",rows:[{eq:"3x + 4 = 19",op:"/ −4"},{lhs:"3x =",ans:15,op:"/ :3"},{lhs:"x =",ans:5}]}],
+    hint:`${M("19 − 4 = 15")}, ואחר כך ${M("15 : 3")}`, sol:eqSteps([["3x + 4 = 19","/ −4"],["3x = 15","/ :3"],["x = 5",""]])},
+   {title:"x בשני הצדדים",
+    fields:[{type:"eqchain",rows:[{eq:"4x + 12 = 60 − 8x",op:"/ +8x"},{eq:"12x + 12 = 60",op:"/ −12"},{lhs:"12x =",ans:48,op:"/ :12"},{lhs:"x =",ans:4}]}],
+    hint:`${M("60 − 12 = 48")}, ואחר כך ${M("48 : 12")}`, sol:eqSteps([["4x + 12 = 60 − 8x","/ +8x"],["12x + 12 = 60","/ −12"],["12x = 48","/ :12"],["x = 4",""]])},
+   {title:"כינוס איברים ותשובה שלילית", prompt:`קודם מכנסים את המספרים באותו צד: ${M("−2 + 8 = 6")}`,
+    fields:[{type:"eqchain",rows:[{eq:"−2x − 2 + 8 = 12",op:"כינוס"},{eq:"−2x + 6 = 12",op:"/ −6"},{lhs:"−2x =",ans:6,op:"/ :(−2)"},{lhs:"x =",ans:-3,neg:true}]}],
+    hint:`${M("12 − 6 = 6")}. מחלקים ב-${M("(−2)")}: פלוס חלקי מינוס = מינוס. הכפתור ± מוסיף מינוס.`, sol:eqSteps([["−2x + 6 = 12","/ −6"],["−2x = 6","/ :(−2)"],["x = −3",""]])}
   ]},
 { id:2, date:"2026-11-09", topic:"eq", title:"משוואות עם סוגריים",
-  learn:{ p:[`<b>פתיחת סוגריים (חוק הפילוג):</b> כופלים את המספר שבחוץ <b>בכל אחד</b> מהאיברים שבתוך הסוגריים. ${M("3(x + 2) = 3x + 6")}`,
-             `<b>זהירות – כופל שלילי מחליף סימנים:</b> ${M("−2(x + 3) = −2x − 6")}. וגם מינוס לפני סוגריים: ${M("−(x + 1) = −x − 1")}.`,
+  learn:{ p:[`<b>פתיחת סוגריים (חוק הפילוג):</b> כופלים את המספר שבחוץ <b>בכל אחד</b> מהאיברים שבתוך הסוגריים:`,
+             eqSteps([["3(x + 2) = 3x + 6",""]]),
+             `<b>זהירות – כופל שלילי מחליף סימנים:</b>`,
+             eqSteps([["−2(x + 3) = −2x − 6",""],["−(x + 1) = −x − 1",""]]),
              `אחרי פתיחת הסוגריים – מכנסים איברים דומים, ופותרים כמו משוואה רגילה.`],
-          ex:`דוגמה: ${M("4(x − 1) = 20 − 2(x + 3)")}`,
-          steps:[`פתיחת סוגריים: ${M("4x − 4 = 20 − 2x − 6")}`,`כינוס: ${M("4x − 4 = 14 − 2x")}`,`${M("/ +2x")} ← ${M("6x − 4 = 14")}`,`${M("/ +4")} ← ${M("6x = 18")} ← ${M("/ :6")} ← ${M("x = 3")}`] },
-  tool:["כופלים את המספר שבחוץ בכל איבר בסוגריים","כופל שלילי מחליף את הסימנים בפנים","אחרי הפתיחה: כינוס ← פותרים"],
+          ex:"דוגמה:",
+          exHtml:eqSteps([["4(x − 1) = 20 − 2(x + 3)","פתיחת סוגריים"],["4x − 4 = 20 − 2x − 6","כינוס"],["4x − 4 = 14 − 2x","/ +2x"],["6x − 4 = 14","/ +4"],["6x = 18","/ :6"],["x = 3",""]]),
+          steps:[] },
+  tool:["כופלים את המספר שבחוץ בכל איבר שבסוגריים","כופל שלילי מחליף את הסימנים בפנים","אחרי הפתיחה: כינוס, ואז פותרים"],
   qs:[
    {title:"פתיחת סוגריים", fields:[
-     {type:"choice",inline:true,label:`${M("3(x + 2) =")}`,options:["3x + 2","3x + 6","x + 6"],ans:1},
-     {type:"choice",inline:true,label:`${M("−2(x + 3) =")}`,options:["−2x + 6","−2x − 6","−2x + 3"],ans:1}],
-    hint:"כופלים את המספר שבחוץ בכל אחד מהאיברים. כופל שלילי ← הפלוס בפנים הופך למינוס.", sol:`${M("3x + 6")} ; ${M("−2x − 6")}`},
-   {title:"מינוס לפני סוגריים", prompt:`${M("4x − (x + 1) = 17")}`,
-    fields:[{label:`פותחים ומכנסים: ${M("3x − 1 = 17")} ← ${M("/ +1")} ← ${M("3x =")}`,ans:18},{label:`${M("/ :3")} ← ${M("x =")}`,ans:6}],
-    hint:`${M("−(x + 1) = −x − 1")}. ${M("17 + 1 = 18")}.`, sol:`${M("3x = 18")} ← ${M("x = 6")}`},
-   {title:"היקף מלבן", prompt:`היקף מלבן הוא 68 ס"מ. הרוחב ${M("x")} והאורך ${M("3x + 2")}.<br>המשוואה: ${M("2x + 2(3x + 2) = 68")}`,
-    fields:[{label:`${M("x =")}`,ans:8,suf:"ס\"מ"},{label:"אורך המלבן =",ans:26,suf:"ס\"מ"}],
-    hint:`${M("2x + 6x + 4 = 68")} ← ${M("8x = 64")}. האורך: מציבים ב-${M("3x + 2")}.`, sol:`${M("x = 8")} ; ${M("3·8 + 2 = 26")}`}
+     {type:"choice",inline:true,label:"3(x + 2) =",options:["3x + 2","3x + 6","x + 6"],ans:1},
+     {type:"choice",inline:true,label:"−2(x + 3) =",options:["−2x + 6","−2x − 6","−2x + 3"],ans:1}],
+    hint:"כופלים את המספר שבחוץ בכל אחד מהאיברים. כופל שלילי – הפלוס שבפנים הופך למינוס.", sol:eqSteps([["3(x + 2) = 3x + 6",""],["−2(x + 3) = −2x − 6",""]])},
+   {title:"מינוס לפני סוגריים",
+    fields:[{type:"eqchain",rows:[{eq:"4x − (x + 1) = 17",op:"פתיחת סוגריים"},{eq:"4x − x − 1 = 17",op:"כינוס"},{eq:"3x − 1 = 17",op:"/ +1"},{lhs:"3x =",ans:18,op:"/ :3"},{lhs:"x =",ans:6}]}],
+    hint:`${M("17 + 1 = 18")}, ואחר כך ${M("18 : 3")}`, sol:eqSteps([["3x − 1 = 17","/ +1"],["3x = 18","/ :3"],["x = 6",""]])},
+   {title:"היקף מלבן", prompt:`היקף מלבן הוא 68 ס"מ. הרוחב ${M("x")} והאורך ${M("3x + 2")}.`,
+    fields:[{type:"eqchain",rows:[{eq:"2x + 2(3x + 2) = 68",op:"פתיחת סוגריים"},{eq:"2x + 6x + 4 = 68",op:"כינוס"},{eq:"8x + 4 = 68",op:"/ −4"},{lhs:"8x =",ans:64,op:"/ :8"},{lhs:"x =",ans:8}]},
+            {label:`אורך המלבן ${M("(3x + 2)")} =`,ans:26,suf:"ס\"מ"}],
+    hint:`${M("68 − 4 = 64")}, ${M("64 : 8 = 8")}. האורך: ${M("3·8 + 2")}`, sol:`${M("x = 8")} ; אורך: ${M("3·8 + 2 = 26")} ס"מ`}
   ]},
 { id:3, date:"2026-11-10", topic:"pct", title:"שיטת הטבלה: מציאת החלק",
   learn:{ p:[`<b>אחוז</b> פירושו "מתוך 100". אחוזים שכדאי לזכור: 100% = השלם, 50% = חצי, 25% = רבע, 10% = עשירית.`,
@@ -280,7 +301,7 @@ const MISSIONS = [
   tool:["ממוצע = סכום : מספר הנתונים","ממוצע משוקלל: ערך × שכיחות ← מחברים ← מחלקים בסך הכול","דיאגרמת עיגול – רק כשהסכום 100%"],
   qs:[
    {title:"ממוצע פשוט", fields:[{label:`הממוצע של ${M("4, 6, 8")} =`,ans:6}],
-    hint:"מחברים: 4 + 6 + 8, ומחלקים ב-3.", sol:`${M("18 : 3 = 6")}`},
+    hint:`מחברים: ${M("4 + 6 + 8")}, ומחלקים ב-3.`, sol:`${M("18 : 3 = 6")}`},
    {title:"ממוצע משוקלל", prompt:`שאלו 10 משפחות כמה ילדים יש להן:${kidsTable}`,
     fields:[{label:`סכום המכפלות: ${M("1×2 + 2×6 + 3×2")} =`,ans:20},{label:"הממוצע (הסכום : 10 משפחות) =",ans:2}],
     hint:`${M("1×2 = 2")} , ${M("2×6 = 12")} , ${M("3×2 = 6")} – מחברים ומחלקים ב-10.`, sol:`${M("2 + 12 + 6 = 20")} ; ${M("20 : 10 = 2")}`},
@@ -301,7 +322,7 @@ const MISSIONS = [
    {title:"שטח ורדיוס", fields:[{label:"עיגול שהרדיוס שלו 4 ס\"מ. השטח שלו =",ans:16,suf:"π"},{label:"עיגול שהקוטר שלו 12 ס\"מ. הרדיוס שלו =",ans:6,suf:"ס\"מ"}],
     hint:`שטח: ${M("4 × 4")} וכותבים π. רדיוס: קוטר : 2.`, sol:`${M("π · 4² = 16π")} ; ${M("12 : 2 = 6")}`},
    {title:"שטח מתוך קוטר", fields:[{label:"עיגול שהקוטר שלו 6 ס\"מ. השטח שלו =",ans:9,suf:"π"}],
-    hint:"קודם רדיוס: 6 : 2 = 3. אחר כך 3 × 3.", sol:`${M("R = 3")} ← ${M("π · 9 = 9π")}`}
+    hint:`קודם רדיוס: ${M("6 : 2 = 3")}. אחר כך ${M("3 × 3")}.`, sol:`${M("R = 3")} ← ${M("π · 9 = 9π")}`}
   ]},
 { id:9, date:"2026-11-18", topic:"geo", title:"נפח הגליל",
   learn:{ p:[`<b>גליל</b> בנוי משני בסיסים עגולים שווים ומ<b>מעטפת</b>. ל-R קוראים רדיוס הבסיס, ול-h הגובה.`,
@@ -352,10 +373,10 @@ const MISSIONS = [
     hint:`שכיח: איזה מספר מופיע הכי הרבה? ממוצע: ${M("5+7+7+9+7 = 35")} ואז : 5.`, sol:`שכיח 7 ; ${M("35 : 5 = 7")}`},
    {title:"גליל וחרוט", prompt:`גליל: ${M("R = 3")}, ${M("h = 4")}.`,
     fields:[{label:"נפח הגליל =",ans:36,suf:"π"},{label:"נפח חרוט עם אותו בסיס ואותו גובה =",ans:12,suf:"π"}],
-    hint:`${M("3 × 3 = 9")} , ${M("9 × 4 = 36")}. חרוט: 36 : 3.`, sol:`${M("36π")} ; ${M("12π")}`},
-   {title:"משוואות", prompt:`${M("5(x − 2) = 15")}`,
-    fields:[{label:`פתיחת סוגריים: ${M("5x − 10 = 15")} ← ${M("x =")}`,ans:5,neg:true}],
-    hint:`${M("/ +10")} ← ${M("5x = 25")} ← ${M("/ :5")}`, sol:`${M("5x = 25")} ← ${M("x = 5")}`}
+    hint:`${M("3 × 3 = 9")} , ${M("9 × 4 = 36")}. חרוט: ${M("36 : 3")}.`, sol:`${M("36π")} ; ${M("12π")}`},
+   {title:"משוואות",
+    fields:[{type:"eqchain",rows:[{eq:"5(x − 2) = 15",op:"פתיחת סוגריים"},{eq:"5x − 10 = 15",op:"/ +10"},{lhs:"5x =",ans:25,op:"/ :5"},{lhs:"x =",ans:5}]}],
+    hint:`${M("15 + 10 = 25")}, ואחר כך ${M("25 : 5")}`, sol:eqSteps([["5x − 10 = 15","/ +10"],["5x = 25","/ :5"],["x = 5",""]])}
   ]}
 ];
 
@@ -411,7 +432,7 @@ function startMission(m){
   run={m, i:-1};
   const L=m.learn;
   $("app").innerHTML = headHTML(m) + `<div class="card learn"><h3>📘 הסבר</h3>${L.p.map(x=>`<p>${x}</p>`).join("")}
-    ${L.steps.length?`<div class="steps"><div class="h">${L.ex}</div>${L.exHtml||""}<ol>${L.steps.map(s=>`<li>${s}</li>`).join("")}</ol></div>`:""}</div>
+    ${(L.steps.length||L.exHtml)?`<div class="steps"><div class="h">${B(L.ex)}</div>${L.exHtml||""}${L.steps.length?`<ol>${L.steps.map(s=>`<li>${B(s)}</li>`).join("")}</ol>`:""}</div>`:""}</div>
     ${m.data?`<div class="card">${m.data}</div>`:""}
     <button class="btn" id="go">לתרגילים (${m.qs.length}) ←</button>`;
   $("bk").onclick=renderHome; $("go").onclick=()=>{ run.i=0; renderQuestion(); };
@@ -420,11 +441,11 @@ function startMission(m){
 function renderQuestion(){
   const {m,i}=run, q=m.qs[i];
   run.tries=0; run.solved=false; run.choiceSel={};
-  let html = headHTML(m) + `<details class="tool"><summary>🧰 ארגז כלים</summary><ul>${m.tool.map(t=>`<li>${t}</li>`).join("")}</ul></details>
+  let html = headHTML(m) + `<details class="tool"><summary>🧰 ארגז כלים</summary><ul>${m.tool.map(t=>`<li>${B(t)}</li>`).join("")}</ul></details>
   <div class="dots">${m.qs.map((_,k)=>`<div class="dot ${k<i?'fin':(k===i?'on':'')}"></div>`).join("")}</div>
   <div class="card"><div class="qk">תרגיל ${i+1} מתוך ${m.qs.length}</div><div class="qtitle">${q.title}</div>
   ${m.data?`<div class="prompt">${m.data}</div>`:""}
-  ${q.prompt?`<div class="prompt">${q.prompt}</div>`:""}
+  ${q.prompt?`<div class="prompt">${B(q.prompt)}</div>`:""}
   ${q.fields.map((f,k)=>fieldHTML(f,k)).join("")}
   <div class="fb" id="fb"></div>
   <div id="acts"><button class="btn" id="chk">בדיקה</button></div></div>`;
@@ -437,14 +458,17 @@ function renderQuestion(){
     const k=b.dataset.k; document.querySelectorAll(`.choice[data-k="${k}"]`).forEach(x=>x.classList.remove("sel","wrong","good"));
     b.classList.add("sel"); run.choiceSel[k]=+b.dataset.o;
   });
-  document.querySelectorAll(".field input").forEach(inp=>inp.addEventListener("keydown",e=>{ if(e.key==="Enter") check(); }));
+  document.querySelectorAll(".field input, .eqb input").forEach(inp=>inp.addEventListener("keydown",e=>{ if(e.key==="Enter") check(); }));
 }
 function fieldHTML(f,k){
-  if(f.type==="choice") return `<div class="field"><div class="lab">${f.label}</div><div class="choices ${f.inline?'inline':''}">${f.options.map((o,j)=>`<button class="choice" data-k="${k}" data-o="${j}">${o}</button>`).join("")}</div></div>`;
-  if(f.type==="point") return `<div class="field"><div class="lab">${f.label}</div>
+  if(f.type==="eqchain") return `<div class="field">${f.label?`<div class="lab">${B(f.label)}</div>`:""}<div class="eqb" style="margin:0 auto">${f.rows.map((r,i)=>{
+      const left = ("ans" in r) ? `${r.lhs} <input id="f${k}_${i}" inputmode="decimal" autocomplete="off">${r.neg?`<button class="pm" data-for="f${k}_${i}" type="button">±</button>`:""}` : r.eq;
+      return `<div class="e">${left}</div><div class="op">${r.op||""}</div>`; }).join("")}</div></div>`;
+  if(f.type==="choice") return `<div class="field"><div class="lab">${B(f.label)}</div><div class="choices ${f.inline?'inline':''}">${f.options.map((o,j)=>`<button class="choice" data-k="${k}" data-o="${j}">${B(o)}</button>`).join("")}</div></div>`;
+  if(f.type==="point") return `<div class="field"><div class="lab">${B(f.label)}</div>
     <div class="pt">( <input id="f${k}x" inputmode="decimal" autocomplete="off" placeholder="x"><button class="pm" data-for="f${k}x" type="button">±</button> ,
     <input id="f${k}y" inputmode="decimal" autocomplete="off" placeholder="y"><button class="pm" data-for="f${k}y" type="button">±</button> )</div></div>`;
-  return `<div class="field"><div class="lab">${f.label}</div><div class="inwrap"><input id="f${k}" inputmode="decimal" autocomplete="off">${f.neg?`<button class="pm" data-for="f${k}" type="button">±</button>`:""}${f.suf?`<span class="suf">${f.suf}</span>`:""}</div></div>`;
+  return `<div class="field"><div class="lab">${B(f.label)}</div><div class="inwrap"><input id="f${k}" inputmode="decimal" autocomplete="off">${f.neg?`<button class="pm" data-for="f${k}" type="button">±</button>`:""}${f.suf?`<span class="suf">${f.suf}</span>`:""}</div></div>`;
 }
 function num(v){ v=String(v).trim().replace(/[−–]/g,"-").replace(/,/g,".").replace(/[%π₪\s]/g,""); if(v===""||v==="-") return NaN; return Number(v); }
 const eq=(a,b)=>Math.abs(a-b)<1e-6;
@@ -452,7 +476,11 @@ function check(){
   if(run.solved) return;
   const q=run.m.qs[run.i]; let allOk=true, anyEmpty=false;
   q.fields.forEach((f,k)=>{
-    if(f.type==="choice"){
+    if(f.type==="eqchain"){
+      f.rows.forEach((r,i)=>{ if(!("ans" in r)) return; const inp=$(`f${k}_${i}`), v=num(inp.value); inp.classList.remove("good","wrong");
+        if(isNaN(v)){ anyEmpty=true; allOk=false; return; }
+        if(eq(v,r.ans)) inp.classList.add("good"); else { inp.classList.add("wrong"); allOk=false; } });
+    } else if(f.type==="choice"){
       const s=run.choiceSel[k], btns=document.querySelectorAll(`.choice[data-k="${k}"]`);
       if(s===undefined){ anyEmpty=true; allOk=false; return; }
       btns.forEach(b=>b.classList.remove("good","wrong"));
@@ -475,8 +503,8 @@ function check(){
     $("nx").onclick=next; return;
   }
   run.tries++;
-  if(run.tries<3){ fb.className="fb hint"; fb.innerHTML=`לא נכון. רמז: ${q.hint}<br><span class="small">תקנו את המשבצות האדומות ובדקו שוב.</span>`; }
-  else { fb.className="fb sol"; fb.innerHTML=`פתרון: <b>${q.sol}</b><br><span class="small">כתבו את התשובה הנכונה ולחצו "בדיקה" כדי להמשיך.</span>`; }
+  if(run.tries<3){ fb.className="fb hint"; fb.innerHTML=`לא נכון. רמז: ${B(q.hint)}<br><span class="small">תקנו את המשבצות האדומות ובדקו שוב.</span>`; }
+  else { fb.className="fb sol"; fb.innerHTML=`פתרון: <b>${B(q.sol)}</b><br><span class="small">כתבו את התשובה הנכונה ולחצו "בדיקה" כדי להמשיך.</span>`; }
 }
 function next(){ run.i++; if(run.i<run.m.qs.length) renderQuestion(); else finishMission(); }
 
@@ -497,6 +525,7 @@ function finishMission(){
 
 /* ============ תצוגת מורה: כל התרגילים והתשובות ============ */
 function ansText(f){
+  if(f.type==="eqchain") return eqSteps(f.rows.map(r=>[("ans" in r)? `${r.lhs} <span style="color:var(--ok)">${String(r.ans).replace(/-/g,"−")}</span>` : r.eq, r.op||""]));
   if(f.type==="choice") return f.options[f.ans];
   if(f.type==="point") return M(`(${f.ans[0]}, ${f.ans[1]})`.replace(/-/g,"−"));
   return M(String(f.ans).replace(/-/g,"−") + (f.suf==="π"?"π":"")) + (f.suf && f.suf!=="π" ? " "+f.suf : "");
@@ -507,12 +536,12 @@ function renderAll(){
   MISSIONS.forEach(m=>{ const tp=TOPICS[m.topic], L=m.learn;
     h+=`<div class="mhead" style="background:${tp.bg}"><div class="k">משימה ${m.id} • ${fmtDate(m.date)} • ${tp.name}</div><h2>${m.title}</h2></div>
     <div class="card learn"><h3>📘 הסבר</h3>${L.p.map(x=>`<p>${x}</p>`).join("")}
-    ${L.steps.length?`<div class="steps"><div class="h">${L.ex}</div>${L.exHtml||""}<ol>${L.steps.map(x=>`<li>${x}</li>`).join("")}</ol></div>`:""}</div>
+    ${(L.steps.length||L.exHtml)?`<div class="steps"><div class="h">${B(L.ex)}</div>${L.exHtml||""}${L.steps.length?`<ol>${L.steps.map(x=>`<li>${B(x)}</li>`).join("")}</ol>`:""}</div>`:""}</div>
     ${m.data?`<div class="card">${m.data}</div>`:""}`;
     m.qs.forEach((q,i)=>{
-      h+=`<div class="card"><div class="qk">תרגיל ${i+1}</div><div class="qtitle">${q.title}</div>${q.prompt?`<div class="prompt">${q.prompt}</div>`:""}
-      <ul style="margin:0;padding-inline-start:20px">${q.fields.map(f=>`<li style="margin:6px 0">${f.label}${f.type==="choice"?` <span class="small">(${f.options.join(" / ")})</span>`:""}<br><b style="color:var(--ok)">תשובה: ${ansText(f)}</b></li>`).join("")}</ul>
-      <div class="small" style="margin-top:6px">רמז: ${q.hint}</div></div>`;
+      h+=`<div class="card"><div class="qk">תרגיל ${i+1}</div><div class="qtitle">${q.title}</div>${q.prompt?`<div class="prompt">${B(q.prompt)}</div>`:""}
+      <ul style="margin:0;padding-inline-start:20px">${q.fields.map(f=>`<li style="margin:6px 0;${f.type==="eqchain"?"list-style:none":""}">${B(f.label||"")}${f.type==="choice"?` <span class="small">(${f.options.map(B).join(" / ")})</span>`:""}<br><b style="color:var(--ok)">תשובה: ${ansText(f)}</b></li>`).join("")}</ul>
+      <div class="small" style="margin-top:6px">רמז: ${B(q.hint)}</div></div>`;
     });
   });
   $("app").innerHTML=h; $("hm").onclick=()=>{ location.hash=T_OPEN; };
